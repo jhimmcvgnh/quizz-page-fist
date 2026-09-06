@@ -1754,7 +1754,7 @@ function initQuizLogic(core, scope = document) {
   // duplicate listeners accumulating across Barba page navigations).
 function submit() {
   // Redirect to demo/CTA page — update this URL as needed
-  const ctaUrl = 'https://segunda-p-gina-do-quiz.vercel.app/';
+  const ctaUrl = 'https://jimdevseconddesign-com.vercel.app/';
   try { sessionStorage.setItem('quiz_completed', 'true'); } catch {}
   window.location.href = ctaUrl;
 }
@@ -1842,7 +1842,11 @@ function initQuizInteraction(scope = document) {
 
   function setActiveTab(idx) {
     tabs.forEach(t => t.classList.remove('is-active'));
-    tabs.find(t => t.dataset.quizTab === `q${idx}`)?.classList.add('is-active');
+    const activeTab = tabs.find(t => t.dataset.quizTab === `q${idx}`);
+    if (activeTab) {
+      activeTab.classList.add('is-active');
+      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
   }
 
   // Mark a tab as visited (answered or seen for copies)
@@ -1863,24 +1867,26 @@ function initQuizInteraction(scope = document) {
     const split     = charSplits.get(q);
     const btns      = getAnswers(q);
     const charCount = split?.chars.length ?? 0;
+    const stagger   = isCopyScreen(q) ? Math.min(CHAR_STAGGER, 1.2 / Math.max(charCount, 1)) : CHAR_STAGGER;
 
     if (split) {
       tl.to(split.chars, {
         opacity: 1, y: 0, duration: ENTER_DUR, ease: IN_EASE,
-        stagger: CHAR_STAGGER
+        stagger: stagger
       });
     }
     tl.to(btns, {
       opacity: 1, y: 0, duration: ENTER_DUR, ease: IN_EASE,
       stagger: BUTTON_STAGGER
-    }, charCount * CHAR_STAGGER + ENTER_DUR * 0.4);
+    }, (split ? charCount * stagger : 0) + ENTER_DUR * 0.4);
 
     return tl;
   }
 
   // Buttons sweep out in reverse, chars follow — both fully animated
   function exitQuestion(q, tl) {
-    const split = charSplits.get(q);
+    const split       = charSplits.get(q);
+    const exitStagger = isCopyScreen(q) ? Math.min(CHAR_STAGGER * 0.5, 0.4 / Math.max(split?.chars.length || 1, 1)) : CHAR_STAGGER * 0.5;
 
     tl.to(getAnswers(q), {
       opacity: 0, y: -12, duration: EXIT_DUR, ease: OUT_EASE,
@@ -1889,7 +1895,7 @@ function initQuizInteraction(scope = document) {
     if (split) {
       tl.to(split.chars, {
         opacity: 0, y: -16, duration: EXIT_DUR, ease: OUT_EASE,
-        stagger: { each: CHAR_STAGGER * 0.5, from: 'end' }
+        stagger: { each: exitStagger, from: 'end' }
       }, '<0.05');
     }
     tl.call(() => {
@@ -2033,7 +2039,7 @@ function initQuizInteraction(scope = document) {
       }
       return;
     }
-    if (!['a', 'b', 'c'].includes(e.key.toLowerCase())) return;
+    if (!['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) return;
     current?.querySelector(`.cmd-answer[data-answer="${e.key.toLowerCase()}"]`)?.click();
   }
 
@@ -2111,7 +2117,8 @@ function initCMDAudio() {
   const answerSounds = {
     a: new Howl({ src: ['https://sour.b-cdn.net/cmd-zest/Sour-button1.mp3'], volume: 0.1 }),
     b: new Howl({ src: ['https://sour.b-cdn.net/cmd-zest/Sour-button3.mp3'], volume: 0.1 }),
-    c: new Howl({ src: ['https://sour.b-cdn.net/cmd-zest/Sour-button5.mp3'], volume: 0.1 })
+    c: new Howl({ src: ['https://sour.b-cdn.net/cmd-zest/Sour-button5.mp3'], volume: 0.1 }),
+    d: new Howl({ src: ['https://sour.b-cdn.net/cmd-zest/Sour-button1.mp3'], volume: 0.1 })
   };
  
   const startBtn  = document.querySelector('[data-audio-start]');
