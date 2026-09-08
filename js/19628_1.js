@@ -2,6 +2,5 @@
 
 let paths = window.location.pathname.split('/')
 
-
 // script -> 
-import('./58625.js')
+import('./58625.js?v=' + Date.now())

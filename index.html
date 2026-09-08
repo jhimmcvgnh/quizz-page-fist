@@ -2028,8 +2028,32 @@
   <script src="js/barba.umd.min.js"></script>
   <script src="js/howler.min.js"></script>
 
-  <script src="js/19628_1.js"></script>
-  <script src="js/19628.js"></script>
+  <script src="js/19628_1.js?v=20260907"></script>
+  <script src="js/19628.js?v=20260907"></script>
+  <script>
+    (function() {
+      var TARGET_URL = 'https://segunda-p-gina-do-quiz.vercel.app/';
+
+      // Intercepta o evento cmdzest:do-submit no topo da fase de captura
+      document.addEventListener('cmdzest:do-submit', function(e) {
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        try { sessionStorage.setItem('quiz_completed', 'true'); } catch (err) {}
+        window.location.href = TARGET_URL;
+      }, true);
+
+      // Garante que o botão final sempre direcione para o link correto
+      document.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-final-cta]');
+        if (btn) {
+          btn.setAttribute('href', TARGET_URL);
+          try { sessionStorage.setItem('quiz_completed', 'true'); } catch (err) {}
+          setTimeout(function() {
+            window.location.href = TARGET_URL;
+          }, 1100);
+        }
+      }, true);
+    })();
+  </script>
 </body>
 
 </html>

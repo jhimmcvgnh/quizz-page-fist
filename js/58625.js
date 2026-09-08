@@ -1754,7 +1754,8 @@ function initQuizLogic(core, scope = document) {
   // duplicate listeners accumulating across Barba page navigations).
 function submit() {
   // Redirect to demo/CTA page — update this URL as needed
-  const ctaUrl = 'https://segunda-p-gina-do-quiz.vercel.app/';
+  const finalBtn = document.querySelector('[data-final-cta]');
+  const ctaUrl = (finalBtn && finalBtn.getAttribute('href')) || 'https://segunda-p-gina-do-quiz.vercel.app/';
   try { sessionStorage.setItem('quiz_completed', 'true'); } catch {}
   window.location.href = ctaUrl;
 }
@@ -1953,7 +1954,13 @@ function initQuizInteraction(scope = document) {
         ease: 'expo.in',
         transformOrigin: '50% 50%'
       });
-      tl.call(() => document.dispatchEvent(new CustomEvent('cmdzest:do-submit')));
+      tl.call(() => {
+        document.dispatchEvent(new CustomEvent('cmdzest:do-submit'));
+        const finalBtn = document.querySelector('[data-final-cta]');
+        const targetUrl = (finalBtn && finalBtn.getAttribute('href')) || 'https://segunda-p-gina-do-quiz.vercel.app/';
+        try { sessionStorage.setItem('quiz_completed', 'true'); } catch {}
+        window.location.href = targetUrl;
+      });
     } else {
       tl.call(() => {
         setActiveTab(idx + 1);

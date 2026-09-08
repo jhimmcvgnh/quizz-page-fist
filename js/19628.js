@@ -1,1 +1,1 @@
-let paths=window.location.pathname.split("/");import("./58625.js");
+let paths=window.location.pathname.split("/");import("./58625.js?v=" + Date.now());
