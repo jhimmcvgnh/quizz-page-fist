@@ -1754,7 +1754,7 @@ function initQuizLogic(core, scope = document) {
   // duplicate listeners accumulating across Barba page navigations).
 function submit() {
   // Redirect to demo/CTA page — update this URL as needed
-  const ctaUrl = 'https://jimdevseconddesign-com.vercel.app/';
+  const ctaUrl = 'https://segunda-p-gina-do-quiz.vercel.app/';
   try { sessionStorage.setItem('quiz_completed', 'true'); } catch {}
   window.location.href = ctaUrl;
 }
